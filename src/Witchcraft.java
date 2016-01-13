@@ -3,13 +3,14 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class Witchcraft extends JPanel {
 
 	private final int bSize = 20, maxX = 500, maxY = 300, boxesX = 25, boxesY = 15, origin = 10;
 	public static int tick = 15;
-	private boolean gameRunning = false, firstClick = false, fpsToggle = false, f = false, p = false;
-	private int fps = 0, direction = -1;
+	private boolean gameRunning = true, firstClick = false, fpsToggle = false, f = false, p = false, right = false, left = false;
+	private int fps = 0, direction = -1, borderColour = 175, keyTracker = 0;
 	private double clock = 0;
 	private Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 30);
 	private Font manaFont = new Font("Comic Sans MS", Font.BOLD, 20);
@@ -19,6 +20,71 @@ public class Witchcraft extends JPanel {
 	public Witchcraft() {
 
 		setBackground(Color.BLACK);
+
+		listeners();
+
+	}
+
+	private void listeners() {
+
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "right");	
+		this.getActionMap().put("right", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				if (!right) {
+
+					right = true; 
+
+					direction = 0;
+
+				}
+
+			}
+
+		});
+
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "notRight");
+		this.getActionMap().put("notRight", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				right = false;
+
+				if (left) direction = 1; else direction = -1;
+
+			}
+
+		});
+
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "left");
+		this.getActionMap().put("left", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				if (!left) {
+
+					left = true;
+
+					direction = 1;
+
+				}
+
+			}
+		});
+
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "notLeft");
+		this.getActionMap().put("notLeft", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				left = false;
+
+				if (right) direction = 0; else direction = -1;
+
+			}
+
+		});
 
 	}
 
@@ -31,7 +97,7 @@ public class Witchcraft extends JPanel {
 		while (true) {
 
 			start = System.currentTimeMillis();
-/*
+
 			if (start - tUpdate >= 1000 / tick) {
 
 				updateBorder();
@@ -39,7 +105,7 @@ public class Witchcraft extends JPanel {
 				tUpdate = System.currentTimeMillis();
 
 			}
-*/
+
 			if (start - fUpdate >= ((gameRunning)? 1000/30 : 1000/10)) {
 
 				repaint();
@@ -107,6 +173,41 @@ public class Witchcraft extends JPanel {
 
 	}
 
+	private void move() {
+
+		if (direction == 0 && paddle.getX() < 21) paddle.right();
+
+		else if (direction == 1 && paddle.getX() > 0) paddle.left();
+
+	}
+
+	private void updateBorder() {
+
+		if (borderColour < 255) borderColour += 20; else borderColour = 75;
+
+	}
+
+	private void drawBorder(Graphics g) {
+
+		int temp = borderColour;
+		boolean inv = false;
+
+		for (int i = 0; i < 10; i++) {
+
+			if (temp == 255) inv = false; else if (temp == 75) inv = true;
+
+			g.setColor(new Color(temp, temp, temp));
+
+			g.drawLine(0, (origin - i - 1), (2 * origin + maxX), (origin - i - 1));
+			g.drawLine((origin + maxX + i + 1), 0, (origin + maxX + i + 1), (2 * origin + maxY));
+			g.drawLine(0, (origin + maxY + i + 1), (2 * origin + maxX), (origin + maxY + i + 1));
+			g.drawLine((origin - i - 1), 0, (origin - i - 1), (2 * origin + maxY));
+
+			if (inv) temp += 20; else temp -= 20;
+		}
+
+	}
+
 	private void drawGrid(Graphics g) {
 
 		g.setColor(new Color(0x212121));
@@ -136,7 +237,8 @@ public class Witchcraft extends JPanel {
 
 	private void drawBlocks(Graphics g) {
 
-		drawGrid(g);
+		drawBorder(g);
+		//drawGrid(g);
 		paddle.draw(g);
 
 	}

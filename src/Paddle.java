@@ -37,4 +37,10 @@ public class Paddle extends BlockList {
 
 	}
 
+	public int getX() {
+
+		return holder.get(0).getX();
+
+	}
+
 }

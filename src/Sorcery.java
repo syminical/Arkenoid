@@ -17,6 +17,8 @@ public class Sorcery extends JFrame {
 
 		buildAbox();
 
+		magic.start();
+
 	}
 
 	private void prepareAtlas() {
