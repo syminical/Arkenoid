@@ -15,7 +15,7 @@ public class Brick extends BlockList {
 
 		for (int i = 0; i < 2; i++)
 
-			holder.add(new Block(x + i, y);
+			holder.add(new Block(x + i, y));
 
 	}
 
@@ -35,7 +35,7 @@ public class Brick extends BlockList {
 
 		for (Block temp : holder)
 
-			if (!temp.expired()) temp.draw();
+			if (!temp.expired()) temp.draw(g);
 
 	}
 

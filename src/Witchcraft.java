@@ -4,6 +4,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class Witchcraft extends JPanel {
 
@@ -16,6 +17,7 @@ public class Witchcraft extends JPanel {
 	private Font manaFont = new Font("Comic Sans MS", Font.BOLD, 20);
 	private int[][] grid = new int[20][20];
 	private Paddle paddle = new Paddle();
+	private ArrayList<Brick> bricks = new ArrayList<Brick>();
 
 	public Witchcraft() {
 
@@ -86,6 +88,17 @@ public class Witchcraft extends JPanel {
 
 		});
 
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "test");
+		this.getActionMap().put("test", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				bricks.get(0).expire();
+
+			}
+
+		});
+
 	}
 
 	public void start() {
@@ -93,6 +106,8 @@ public class Witchcraft extends JPanel {
 		double start = 0, end = start, totalTime = 0, totalFrames = 0, tracker = 0, sleepTime = 0, fUpdate = 0, tUpdate = 0, holder;
 
 		clock = System.currentTimeMillis();
+
+		bricks.add(new Brick(1, 1));
 
 		while (true) {
 
@@ -235,8 +250,17 @@ public class Witchcraft extends JPanel {
 
 	}
 
+	private void drawBricks(Graphics g) {
+
+		for (Brick temp : bricks)
+
+			temp.draw(g);
+
+	}
+
 	private void drawBlocks(Graphics g) {
 
+		drawBricks(g);
 		drawBorder(g);
 		//drawGrid(g);
 		paddle.draw(g);

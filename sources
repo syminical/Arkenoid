@@ -1,5 +1,6 @@
 src/Block.java
 src/BlockList.java
+src/Brick.java
 src/Paddle.java
 src/Sorcery.java
 src/Witchcraft.java
