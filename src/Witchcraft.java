@@ -9,13 +9,14 @@ import java.util.ArrayList;
 public class Witchcraft extends JPanel {
 
 	private final int bSize = 20, maxX = 500, maxY = 300, boxesX = 25, boxesY = 15, origin = 10;
-	public static int tick = 15;
+	public static int tick = 20;
 	private boolean gameRunning = true, firstClick = false, fpsToggle = false, f = false, p = false, right = false, left = false;
 	private int fps = 0, direction = -1, borderColour = 175, keyTracker = 0;
 	private double clock = 0;
 	private Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 30);
 	private Font manaFont = new Font("Comic Sans MS", Font.BOLD, 20);
 	private int[][] grid = new int[20][20];
+	private Ball ball = new Ball(13, 10);
 	private Paddle paddle = new Paddle();
 	private ArrayList<Brick> bricks = new ArrayList<Brick>();
 
@@ -103,11 +104,12 @@ public class Witchcraft extends JPanel {
 
 	public void start() {
 
-		double start = 0, end = start, totalTime = 0, totalFrames = 0, tracker = 0, sleepTime = 0, fUpdate = 0, tUpdate = 0, holder;
+		double start = 0, end = start, totalTime = 0, totalFrames = 0, tracker = 0, sleepTime = 0, fUpdate = 0, tUpdate = 0, bUpdate = 0, holder;
 
 		clock = System.currentTimeMillis();
 
 		bricks.add(new Brick(1, 1));
+		
 
 		while (true) {
 
@@ -115,13 +117,15 @@ public class Witchcraft extends JPanel {
 
 			if (start - tUpdate >= 1000 / tick) {
 
-				updateBorder();
+				collision();
 				move();
+				ball.move();
+				updateBorder();
 				tUpdate = System.currentTimeMillis();
 
 			}
 
-			if (start - fUpdate >= ((gameRunning)? 1000/30 : 1000/10)) {
+			if (start - fUpdate >= ((gameRunning)? 1000/60 : 1000/10)) {
 
 				repaint();
 				totalFrames++;
@@ -133,7 +137,7 @@ public class Witchcraft extends JPanel {
 
 			totalTime += (end - start);
 
-			sleepTime = (1000 / ((gameRunning)? 30 : 10) - (end - start));
+			sleepTime = (1000 / ((gameRunning)? 60 : 10) - (end - start));
 
 			if (sleepTime <= 0)
 	
@@ -190,15 +194,65 @@ public class Witchcraft extends JPanel {
 
 	private void move() {
 
-		if (direction == 0 && paddle.getX() < 21) paddle.right();
+		if (direction == 0 && paddle.getX() < 21) paddle.r();
 
-		else if (direction == 1 && paddle.getX() > 0) paddle.left();
+		else if (direction == 1 && paddle.getX() > 0) paddle.l();
+
+	}
+
+	private void collision() {
+
+		if ((ball.getX() < 1 && ball.left()) || (ball.getX() > 23 && ball.right())) { ball.invX(); return; }
+
+		if ((ball.getY() < 1 && ball.up()) || (ball.getY() > 13 && ball.down())) { ball.invY(); return; }
+
+		if (judge(ball, paddle)) return;
+
+		for (Brick temp : bricks) if (judge(ball, temp)) return;
+
+	}
+
+	private boolean judge(Ball container, Paddle container2) {
+
+		int x1 = ball.getX(), y1 = ball.getY(), x2 = paddle.getX(), y2 = paddle.getY();
+
+		if ( (x1 >= (x2 - 1)) && (x1 <= (x2 + 4)) && ((y1 == (y2 - 1) && ball.down()) || (y1 == (y2 + 1) && ball.up()))) {
+
+			ball.invY();
+
+			if (x1 < (x2 + 1)) ball.xL();
+
+			else if (x1 < (x2 + 3)) ball.xM();
+
+			else ball.xR();
+
+			return true;
+
+		} else if ((x1 >= (x2 + 2)) && (x1 <= (x2 + 4)) && (y1 == y2)) {
+
+			ball.invY();
+			ball.xR();
+
+		} else if ((x1 >= (x2 - 1)) && (x1 <= (x2 + 2)) && (y1 == y2)) {
+
+			ball.invY();
+			ball.xL();
+
+		}
+
+		return false;
+
+	}	
+
+	private boolean judge(Ball container, Brick container2) {
+
+		return false;
 
 	}
 
 	private void updateBorder() {
 
-		if (borderColour < 255) borderColour += 20; else borderColour = 75;
+		if (borderColour < 255) borderColour += 10; else borderColour = 5;//75
 
 	}
 
@@ -209,7 +263,7 @@ public class Witchcraft extends JPanel {
 
 		for (int i = 0; i < 10; i++) {
 
-			if (temp == 255) inv = false; else if (temp == 75) inv = true;
+			if (temp == 255) inv = false; else if (temp == 5) inv = true;//75 -> 5
 
 			g.setColor(new Color(temp, temp, temp));
 
@@ -218,7 +272,7 @@ public class Witchcraft extends JPanel {
 			g.drawLine(0, (origin + maxY + i + 1), (2 * origin + maxX), (origin + maxY + i + 1));
 			g.drawLine((origin - i - 1), 0, (origin - i - 1), (2 * origin + maxY));
 
-			if (inv) temp += 20; else temp -= 20;
+			if (inv) temp += 10; else temp -= 10;//20
 		}
 
 	}
@@ -261,9 +315,10 @@ public class Witchcraft extends JPanel {
 	private void drawBlocks(Graphics g) {
 
 		drawBricks(g);
+		ball.draw(g);
+		paddle.draw(g);
 		drawBorder(g);
 		//drawGrid(g);
-		paddle.draw(g);
 
 	}
 

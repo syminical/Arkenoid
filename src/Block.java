@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class Block {
 
-	private int colour = 0xffffff, x = 12, y = 7, velX = 0, velY = 0;
-	private boolean expired = false;
+	protected int colour = 0xffffff, x = 12, y = 7;
+	protected boolean expired = false;
 
 	public Block(int container, int container2) {
 
@@ -23,13 +23,13 @@ public class Block {
 
 	}
 
-	public void right() {
+	public void r() {
 
 		if (x < 24) x++;
 
 	}
 
-	public void left() {
+	public void l() {
 
 		if (x > 0) x--;
 
@@ -50,18 +50,6 @@ public class Block {
 	public int getY() {
 
 		return y;
-
-	}
-
-	public void invX() {
-
-		velX = -velX;
-
-	}
-
-	public void invY() {
-
-		velY = -velY;
 
 	}
 

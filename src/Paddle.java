@@ -13,19 +13,19 @@ public class Paddle extends BlockList {
 
 	}
 
-	public void right() {
+	public void r() {
 
 		for (Block temp : holder)
 
-			temp.right();
+			temp.r();
 
 	}
 
-	public void left() {
+	public void l() {
 
 		for (Block temp: holder)
 
-			temp.left();
+			temp.l();
 
 	}
 
@@ -40,6 +40,12 @@ public class Paddle extends BlockList {
 	public int getX() {
 
 		return holder.get(0).getX();
+
+	}
+
+	public int getY() {
+
+		return 12;
 
 	}
 
