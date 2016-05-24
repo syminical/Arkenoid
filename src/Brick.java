@@ -19,6 +19,18 @@ public class Brick extends BlockList {
 
 	}
 
+	public int getX() {
+
+		return holder.get(0).getX();		
+
+	}
+
+	public int getY() {
+
+		return holder.get(0).getY();		
+
+	}
+
 	public void expire() {
 
 		expired = true;
@@ -27,7 +39,7 @@ public class Brick extends BlockList {
 
 	public boolean expired() {
 
-		return expired();
+		return expired;
 
 	}
 
@@ -35,7 +47,7 @@ public class Brick extends BlockList {
 
 		for (Block temp : holder)
 
-			if (!temp.expired()) temp.draw(g);
+			if (!expired) temp.draw(g);
 
 	}
 
