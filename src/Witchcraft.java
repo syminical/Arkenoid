@@ -11,7 +11,7 @@ public class Witchcraft extends JPanel {
 	private final int bSize = 20, maxX = 500, maxY = 300, boxesX = 25, boxesY = 15, origin = 10;
 	public static int tick = 20;
 	private boolean gameRunning = true, firstClick = false, fpsToggle = false, f = false, p = false, right = false, left = false;
-	private int fps = 0, direction = -1, borderColour = 175, keyTracker = 0, level = 1;
+	private int fps = 0, direction = -1, borderColour = 175, keyTracker = 0, level = 0;
 	private double clock = 0;
 	private Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 30);
 	private Font manaFont = new Font("Comic Sans MS", Font.BOLD, 20);
@@ -277,11 +277,25 @@ public class Witchcraft extends JPanel {
 
 			container2.expire();
 
+			if (levelUp()) { level++; spawnBricks(); }
+
 			return true;
 
 		}
 
 		return false;
+
+	}
+
+	private boolean levelUp() {
+
+		for (Brick temp : bricks)
+
+			if (!temp.expired())
+
+				return false;
+
+		return true;
 
 	}
 
